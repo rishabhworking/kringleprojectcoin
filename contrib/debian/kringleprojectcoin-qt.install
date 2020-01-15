@@ -1,0 +1,6 @@
+usr/local/bin/kringleprojectcoin-qt usr/bin
+share/pixmaps/kringleprojectcoin32.xpm usr/share/pixmaps
+share/pixmaps/kringleprojectcoin16.xpm usr/share/pixmaps
+share/pixmaps/kringleprojectcoin128.png usr/share/pixmaps
+debian/kringleprojectcoin-qt.desktop usr/share/applications
+debian/kringleprojectcoin-qt.protocol usr/share/kde4/services/

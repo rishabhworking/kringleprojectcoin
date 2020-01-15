@@ -1,0 +1,92 @@
+#!/sbin/runscript
+
+# backward compatibility for existing gentoo layout 
+#
+if [ -d "/var/lib/kringleprojectcoin/.kringleprojectcoin" ]; then
+	KPCD_DEFAULT_DATADIR="/var/lib/kringleprojectcoin/.kringleprojectcoin"
+else
+	KPCD_DEFAULT_DATADIR="/var/lib/kringleprojectcoind"
+fi
+
+KPCD_CONFIGFILE=${KPCD_CONFIGFILE:-/etc/kringleprojectcoin/kringleprojectcoin.conf}
+KPCD_PIDDIR=${KPCD_PIDDIR:-/var/run/kringleprojectcoind}
+KPCD_PIDFILE=${KPCD_PIDFILE:-${KPCD_PIDDIR}/kringleprojectcoind.pid}
+KPCD_DATADIR=${KPCD_DATADIR:-${KPCD_DEFAULT_DATADIR}}
+KPCD_USER=${KPCD_USER:-${KPC_USER:-kringleprojectcoin}}
+KPCD_GROUP=${KPCD_GROUP:-kringleprojectcoin}
+KPCD_BIN=${KPCD_BIN:-/usr/bin/kringleprojectcoind}
+KPCD_NICE=${KPCD_NICE:-${NICELEVEL:-0}}
+KPCD_OPTS="${KPCD_OPTS:-${KPC_OPTS}}"
+
+name="KringleProjectCoin Core Daemon"
+description="KringleProjectCoin cryptocurrency P2P network daemon"
+
+command="/usr/bin/kringleprojectcoind"
+command_args="-pid=\"${KPCD_PIDFILE}\" \
+		-conf=\"${KPCD_CONFIGFILE}\" \
+		-datadir=\"${KPCD_DATADIR}\" \
+		-daemon \
+		${KPCD_OPTS}"
+
+required_files="${KPCD_CONFIGFILE}"
+start_stop_daemon_args="-u ${KPCD_USER} \
+			-N ${KPCD_NICE} -w 2000"
+pidfile="${KPCD_PIDFILE}"
+
+# The retry schedule to use when stopping the daemon. Could be either
+# a timeout in seconds or multiple signal/timeout pairs (like
+# "SIGKILL/180 SIGTERM/300")
+retry="${KPCD_SIGTERM_TIMEOUT}"
+
+depend() {
+	need localmount net
+}
+
+# verify
+# 1) that the datadir exists and is writable (or create it)
+# 2) that a directory for the pid exists and is writable
+# 3) ownership and permissions on the config file
+start_pre() {
+	checkpath \
+	-d \
+	--mode 0750 \
+	--owner "${KPCD_USER}:${KPCD_GROUP}" \
+	"${KPCD_DATADIR}"
+
+	checkpath \
+	-d \
+	--mode 0755 \
+	--owner "${KPCD_USER}:${KPCD_GROUP}" \
+	"${KPCD_PIDDIR}"
+
+	checkpath -f \
+	-o ${KPCD_USER}:${KPCD_GROUP} \
+	-m 0660 \
+	${KPCD_CONFIGFILE}
+
+	checkconfig || return 1
+}
+
+checkconfig()
+{
+	if ! grep -qs '^rpcpassword=' "${KPCD_CONFIGFILE}" ; then
+		eerror ""
+		eerror "ERROR: You must set a secure rpcpassword to run kringleprojectcoind."
+		eerror "The setting must appear in ${KPCD_CONFIGFILE}"
+		eerror ""
+		eerror "This password is security critical to securing wallets "
+		eerror "and must not be the same as the rpcuser setting."
+		eerror "You can generate a suitable random password using the following "
+		eerror "command from the shell:"
+		eerror ""
+		eerror "bash -c 'tr -dc a-zA-Z0-9 < /dev/urandom | head -c32 && echo'"
+		eerror ""
+		eerror "It is recommended that you also set alertnotify so you are "
+		eerror "notified of problems:"
+		eerror ""
+		eerror "ie: alertnotify=echo %%s | mail -s \"KringleProjectCoin Alert\"" \
+			"admin@foo.com"
+		eerror ""
+		return 1
+	fi
+}

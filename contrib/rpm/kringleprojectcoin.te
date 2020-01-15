@@ -1,0 +1,81 @@
+policy_module(kringleprojectcoin, 1.100.1)
+
+########################################
+#
+# Declarations
+#
+
+type kringleprojectcoin_t;
+type kringleprojectcoin_exec_t;
+init_daemon_domain(kringleprojectcoin_t, kringleprojectcoin_exec_t)
+
+permissive kringleprojectcoin_t;
+
+type kringleprojectcoin_initrc_exec_t;
+init_script_file(kringleprojectcoin_initrc_exec_t)
+
+type kringleprojectcoin_conf_t;
+files_type(kringleprojectcoin_conf_t)
+
+type kringleprojectcoin_var_lib_t;
+files_type(kringleprojectcoin_var_lib_t)
+
+type kringleprojectcoin_var_run_t;
+files_type(kringleprojectcoin_var_run_t)
+
+type kringleprojectcoin_port_t;
+corenet_port(kringleprojectcoin_port_t)
+
+########################################
+#
+# kringleprojectcoin local policy
+#
+allow kringleprojectcoin_t self:process { fork };
+
+allow kringleprojectcoin_t self:fifo_file rw_fifo_file_perms;
+allow kringleprojectcoin_t self:unix_stream_socket create_stream_socket_perms;
+
+manage_dirs_pattern(kringleprojectcoin_t, kringleprojectcoin_conf_t, kringleprojectcoin_conf_t)
+manage_files_pattern(kringleprojectcoin_t, kringleprojectcoin_conf_t, kringleprojectcoin_conf_t)
+
+manage_dirs_pattern(kringleprojectcoin_t, kringleprojectcoin_var_lib_t, kringleprojectcoin_var_lib_t)
+manage_files_pattern(kringleprojectcoin_t, kringleprojectcoin_var_lib_t, kringleprojectcoin_var_lib_t)
+files_var_lib_filetrans(kringleprojectcoin_t, kringleprojectcoin_var_lib_t, { dir file })
+
+manage_dirs_pattern(kringleprojectcoin_t, kringleprojectcoin_var_run_t, kringleprojectcoin_var_run_t)
+manage_files_pattern(kringleprojectcoin_t, kringleprojectcoin_var_run_t, kringleprojectcoin_var_run_t)
+
+sysnet_dns_name_resolve(kringleprojectcoin_t)
+corenet_all_recvfrom_unlabeled(kringleprojectcoin_t)
+
+allow kringleprojectcoin_t self:tcp_socket create_stream_socket_perms;
+corenet_tcp_sendrecv_generic_if(kringleprojectcoin_t)
+corenet_tcp_sendrecv_generic_node(kringleprojectcoin_t)
+corenet_tcp_sendrecv_all_ports(kringleprojectcoin_t)
+corenet_tcp_bind_generic_node(kringleprojectcoin_t)
+
+gen_require(`
+    type kringleprojectcoin_port_t;
+')
+allow kringleprojectcoin_t kringleprojectcoin_port_t:tcp_socket name_bind;
+
+gen_require(`
+    type kringleprojectcoin_port_t;
+')
+allow kringleprojectcoin_t kringleprojectcoin_port_t:tcp_socket name_connect;
+
+domain_use_interactive_fds(kringleprojectcoin_t)
+
+files_read_etc_files(kringleprojectcoin_t)
+
+miscfiles_read_localization(kringleprojectcoin_t)
+
+sysnet_dns_name_resolve(kringleprojectcoin_t)
+
+allow kringleprojectcoin_t kringleprojectcoin_exec_t:file execute_no_trans;
+allow kringleprojectcoin_t self:process setsched;
+corecmd_exec_ls(kringleprojectcoin_t)
+corenet_tcp_connect_http_port(kringleprojectcoin_t)
+dev_read_urand(kringleprojectcoin_t)
+fs_getattr_xattr_fs(kringleprojectcoin_t)
+kernel_read_system_state(kringleprojectcoin_t)

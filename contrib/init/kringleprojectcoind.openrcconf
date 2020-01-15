@@ -1,0 +1,33 @@
+# /etc/conf.d/kringleprojectcoind: config file for /etc/init.d/kringleprojectcoind
+
+# Config file location
+#KPCD_CONFIGFILE="/etc/kringleprojectcoin/kringleprojectcoin.conf"
+
+# What directory to write pidfile to?  (created and owned by $KPCD_USER)
+#KPCD_PIDDIR="/var/run/kringleprojectcoind"
+
+# What filename to give the pidfile
+#KPCD_PIDFILE="${KPCD_PIDDIR}/kringleprojectcoind.pid"
+
+# Where to write kringleprojectcoind data (be mindful that the blockchain is large)
+#KPCD_DATADIR="/var/lib/kringleprojectcoind"
+
+# User and group to own kringleprojectcoind process
+#KPCD_USER="kringleprojectcoin"
+#KPCD_GROUP="kringleprojectcoin"
+
+# Path to kringleprojectcoind executable
+#KPCD_BIN="/usr/bin/kringleprojectcoind"
+
+# Nice value to run kringleprojectcoind under
+#KPCD_NICE=0
+
+# Additional options (avoid -conf and -datadir, use flags above)
+#KPCD_OPTS=""
+
+# The timeout in seconds OpenRC will wait for kringleprojectcoind to terminate
+# after a SIGTERM has been raised.
+# Note that this will be mapped as argument to start-stop-daemon's
+# '--retry' option, which means you can specify a retry schedule
+# here. For more information see man 8 start-stop-daemon.
+KPCD_SIGTERM_TIMEOUT=60

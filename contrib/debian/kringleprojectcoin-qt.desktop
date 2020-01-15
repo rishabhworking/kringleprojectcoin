@@ -1,0 +1,13 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=KringleProjectCoin Core
+Comment=Connect to the KringleProjectCoin P2P Network
+Comment[de]=Verbinde mit dem KringleProjectCoin peer-to-peer Netzwerk
+Comment[fr]=KringleProjectCoin, monnaie virtuelle cryptographique pair à pair
+Comment[tr]=KringleProjectCoin, eşten eşe kriptografik sanal para birimi
+Exec=kringleprojectcoin-qt %u
+Terminal=false
+Type=Application
+Icon=kringleprojectcoin128
+MimeType=x-scheme-handler/kringleprojectcoin;
+Categories=Office;Finance;

@@ -1,0 +1,8 @@
+/usr/bin/kringleprojectcoin-cli		--	gen_context(system_u:object_r:kringleprojectcoin_exec_t,s0)
+/usr/sbin/kringleprojectcoind		--	gen_context(system_u:object_r:kringleprojectcoin_exec_t,s0)
+/usr/lib(64)?/kringleprojectcoin/kringleprojectcoind		--	gen_context(system_u:object_r:kringleprojectcoin_exec_t,s0)
+
+/etc/kringleprojectcoin(/.*)?		gen_context(system_u:object_r:kringleprojectcoin_conf_t,s0)
+/var/lib/kringleprojectcoin(/.*)?		gen_context(system_u:object_r:kringleprojectcoin_var_lib_t,s0)
+
+(/var)?/run/kringleprojectcoind(/.*)?   gen_context(system_u:object_r:kringleprojectcoin_var_run_t,s0)
